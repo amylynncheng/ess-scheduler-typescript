@@ -31,12 +31,12 @@ function onOpen() {
  */
 function generateSchedule() {
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  try {
-    spreadsheet.setActiveSheet(spreadsheet.getSheetByName(SCHEDULE_SHEET));
-  } catch(e) {
+  let sheet = spreadsheet.getSheetByName(SCHEDULE_SHEET);
+  if (sheet === null) { // oh sheet, it doesn't exist
     // insert after form responses
-    spreadsheet.insertSheet(SCHEDULE_SHEET, 1);
+    sheet = spreadsheet.insertSheet(SCHEDULE_SHEET, 1);
   }
+  spreadsheet.setActiveSheet(sheet);
   writeBlankSchedule();
 }
 
@@ -83,11 +83,11 @@ class ShiftBlock {
 function getAllShiftRanges(): ShiftBlock[] {
   let allShiftRanges = [];
   for (let i = 0; i < DAYS_OF_THE_WEEK.length; i++) {
-    var column = COLUMNS[i];
-    var startRow = STARTING_ROW;
-    var endRow = startRow + MAX_TUTORS-1; // subtract one because the group of cells is inclusive
-    for (var j = 0; j < ALL_SHIFTS.length; j++) {
-      var shift = new ShiftBlock();
+    let column = COLUMNS[i];
+    let startRow = STARTING_ROW;
+    let endRow = startRow + MAX_TUTORS-1; // subtract one because the group of cells is inclusive
+    for (let j = 0; j < ALL_SHIFTS.length; j++) {
+      let shift = new ShiftBlock();
       shift.range = column+startRow + ':' + column+endRow;
       shift.day = DAYS_OF_THE_WEEK[i];
       shift.time = ALL_SHIFTS[j];
